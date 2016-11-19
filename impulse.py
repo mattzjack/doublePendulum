@@ -8,8 +8,8 @@ def swing():
     top_mass = sphere(mass = 1, radius = 1, color = color.green)
     bot_mass = sphere(mass = 1, radius = 1, color = color.blue)
 
-    top_mass.pos = vector(0, -10, 0)
-    bot_mass.pos = vector(0, -20, 0)
+    top_mass.pos = vector(5, -10, 0)
+    bot_mass.pos = vector(10, -20, 0)
 
     tip_top = helix(const = 10, len = 10, pos = fixed_tip.pos, radius = .5, thickness = .1, coils = 10, color = color.yellow)
     top_bot = helix(const = 10, len = 10, radius = .5, thickness = .1, coils = 10, color = color.cyan)
@@ -25,12 +25,10 @@ def swing():
     top_mass.Fg = vector(0, -top_mass.mass * g, 0)
     bot_mass.Fg = vector(0, -bot_mass.mass * g, 0)
 
-    top_mass.displacement = fixed_tip.pos - top_mass.pos
-    top_mass.Fs_up = tip_top.const * (mag(top_mass.displacement) - tip_top.len) * norm(top_mass.displacement)
+    top_mass.Fs_up = -tip_top.const * (mag(tip_top.axis) - tip_top.len) * norm(tip_top.axis)
 
-    bot_mass.displacement = top_mass.pos - bot_mass.pos
-    bot_mass.Fs = top_bot.const * (mag(bot_mass.displacement) - top_bot.len) * norm(top_mass.displacement)
-    top_mass.Fs_down = -top_bot.const * (mag(bot_mass.displacement) - top_bot.len) * norm(top_mass.displacement)
+    bot_mass.Fs = -top_bot.const * (mag(top_bot.axis) - top_bot.len) * norm(top_bot.axis)
+    top_mass.Fs_down = top_bot.const * (mag(top_bot.axis) - top_bot.len) * norm(top_bot.axis)
 
     top_mass.Ftot = top_mass.Fg + top_mass.Fs_up + top_mass.Fs_down
     bot_mass.Ftot = bot_mass.Fg + bot_mass.Fs
@@ -45,7 +43,7 @@ def swing():
     dt = .01
 
     while timer < 60:
-        rate(100)
+        rate(200)
         timer += dt
 
         top_mass.trail.append(pos = top_mass.pos)
@@ -64,12 +62,10 @@ def swing():
         top_bot.pos = top_mass.pos
         top_bot.axis = bot_mass.pos - top_mass.pos
 
-        top_mass.displacement = fixed_tip.pos - top_mass.pos
-        top_mass.Fs_up = tip_top.const * (mag(top_mass.displacement) - tip_top.len) * norm(top_mass.displacement)
+        top_mass.Fs_up = -tip_top.const * (mag(tip_top.axis) - tip_top.len) * norm(tip_top.axis)
 
-        bot_mass.displacement = top_mass.pos - bot_mass.pos
-        bot_mass.Fs = top_bot.const * (mag(bot_mass.displacement) - top_bot.len) * norm(top_mass.displacement)
-        top_mass.Fs_down = -top_bot.const * (mag(bot_mass.displacement) - top_bot.len) * norm(top_mass.displacement)
+        bot_mass.Fs = -top_bot.const * (mag(top_bot.axis) - top_bot.len) * norm(top_bot.axis)
+        top_mass.Fs_down = top_bot.const * (mag(top_bot.axis) - top_bot.len) * norm(top_bot.axis)
 
         top_mass.Ftot = top_mass.Fg + top_mass.Fs_up + top_mass.Fs_down
         bot_mass.Ftot = bot_mass.Fg + bot_mass.Fs
