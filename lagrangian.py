@@ -44,7 +44,7 @@ def run(iteration):
     timer = 0
     max_time = 20
     #initialize the fixed pivot of the pendulum
-    fixed_tip = box(pos = (0, 0, 0), length = 2, width = 2, height = .5, color = color.red)    
+    fixed_tip = box(pos = (0, 0, 0), length = 2, width = 2, height = .5, color = color.red)
     #initialize the top mass
     top_mass = sphere(mass = 1, radius = 1, color = color.green)    #(note that we haven't declared the position yet)
     top_mass.trail = curve(color = top_mass.color)
@@ -58,6 +58,7 @@ def run(iteration):
     top_mass.theta = math.pi/4     #angle swept out by upper rod against vertical line
     bot_mass.theta = -1*math.pi/4  #angle swept out by lower rod against vertical line
     #here, we finally get the positions of bot_mass and top_mass in cartesian coordinates
+
     top_mass.pos = fixed_tip.pos + polar_to_cart_vector3(l_top, top_mass.theta)
     bot_mass.pos = top_mass.pos + polar_to_cart_vector3(l_bot, bot_mass.theta)
     d_theta_1 = 0   #time derivative of theta_1
@@ -70,7 +71,7 @@ def run(iteration):
     #################
 
     while (timer < max_time):
-        rate(100) #remove this line if you dgaf about the animation 
+        rate(100) #remove this line if you dgaf about the animation
         timer += dt
 
         #update bot_mass and top_mass
@@ -102,7 +103,7 @@ def repeat():
 ##    timer = max_time
 ##
 ##    #initialize the fixed pivot of the pendulum
-##    fixed_tip = box(pos = (0, 0, 0), length = 2, width = 2, height = .5, color = color.red)    
+##    fixed_tip = box(pos = (0, 0, 0), length = 2, width = 2, height = .5, color = color.red)
 ##
 ##    #initialize the top mass
 ##    top_mass = sphere(mass = 1, radius = 1, color = color.green)
@@ -126,6 +127,6 @@ def repeat():
 ##
 ##    d_theta_1 = 0   #time derivative of theta_1
 ##    d_theta_2 = 0   #time derivative of theta_2
-##    
+##
 
 run(0)

@@ -1,5 +1,13 @@
 from visual import *
 from visual.graph import *
+from sys import argv
+
+# script, filename = argv
+
+# target = open(filename, 'w')
+# target.truncate()
+# target.write("helloworld\n")
+
 
 def swing():
     g = 9.8 # N kg-1
@@ -8,13 +16,13 @@ def swing():
     top_mass = sphere(mass = 1, radius = 1, color = color.green)
     bot_mass = sphere(mass = 1, radius = 1, color = color.blue)
 
-    top_mass.pos = vector(5, -10, 0)
-    top_mass.pos = vector(0, 1, 0) * 10
-    bot_mass.pos = vector(10, -20, 0)
-    bot_mass.pos = top_mass.pos + vector(1, 0, 0) * 10
+    top_mass.pos = vector(10, 0, 0)
+    # top_mass.pos = vector(0, 1, 0) * 10
+    bot_mass.pos = vector(20, 0, 0)
+    # bot_mass.pos = top_mass.pos + vector(1, 0, 0) * 10
 
-    tip_top = helix(const = 100000, len = 10, pos = fixed_tip.pos, radius = .5, thickness = .1, coils = 10, color = color.yellow)
-    top_bot = helix(const = 100000, len = 10, radius = .5, thickness = .1, coils = 10, color = color.cyan)
+    tip_top = helix(const = 10000, len = 10, pos = fixed_tip.pos, radius = .5, thickness = .1, coils = 10, color = color.yellow)
+    top_bot = helix(const = 10000, len = 10, radius = .5, thickness = .1, coils = 10, color = color.cyan)
 
     tip_top.axis = top_mass.pos - fixed_tip.pos
 
@@ -42,10 +50,10 @@ def swing():
     bot_mass.momentum = bot_mass.mass * bot_mass.velocity
 
     timer = 0
-    dt = .01 / 3
+    dt = .01
 
-    while timer < 60:
-        rate(200)
+    while timer < 10:
+        rate(100)
         timer += dt
 
         top_mass.trail.append(pos = top_mass.pos)
@@ -71,4 +79,8 @@ def swing():
 
         top_mass.Ftot = top_mass.Fg + top_mass.Fs_up + top_mass.Fs_down
         bot_mass.Ftot = bot_mass.Fg + bot_mass.Fs
+
+        # target.write(str(top_mass.pos) + "\n")
 swing()
+
+# target.close
