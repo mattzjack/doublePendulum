@@ -11,28 +11,24 @@ def polar_to_cart_vector3(r, theta):
     y = -1 * r * math.cos(theta)
     return vector(x, y, 0) #or should it be some other ordering of x, y, and 0
 
-def update_masses(top_mass, bot_mass, fixed_tip, g, dt, l_top, l_bot, d_theta_1, d_theta_2):
-    theta_1 = top_mass.theta
-    theta_2 = bot_mass.theta
+def update_masses(top_mass, bot_mass, fixed_tip, g, dt, l_top, l_bot): 
+    theta_1 = top_mass.theta        #shorthand
+    theta_2 = bot_mass.theta        #shorthand
+    d_theta_1 = top_mass.d_theta    #shorthand
+    d_theta_2 = bot_mass.d_theta    #shorthand
     mu = 1 + top_mass.mass / bot_mass.mass #shorthand
-    #this thing is quite the rat's nest. God I hope it works.
-    theta_1 = top_mass.theta
-    theta_2 = bot_mass.theta
+    theta_1 = top_mass.theta        #shorthand
+    theta_2 = bot_mass.theta        #shorthand
+    #the next two lines are a rat's nest
     d2_theta_1 = (g*(math.sin(theta_2)*math.cos(theta_1-theta_2)-mu*math.sin(theta_1))-(l_bot*d_theta_2*d_theta_2+l_top*d_theta_1*d_theta_1*math.cos(theta_1-theta_2))*math.sin(theta_1-theta_2))/(l_top*(mu-math.cos(theta_1-theta_2)*math.cos(theta_1-theta_2)));
     d2_theta_2 = (mu*g*(math.sin(theta_1)*math.cos(theta_1-theta_2)-math.sin(theta_2))+(mu*l_top*d_theta_1*d_theta_1+l_bot*d_theta_2*d_theta_2*math.cos(theta_1-theta_2))*math.sin(theta_1-theta_2))/(l_bot*(mu-math.cos(theta_1-theta_2)*math.cos(theta_1-theta_2)));
 
-    d_theta_1 += d2_theta_1*dt;
-    d_theta_2 += d2_theta_2*dt;
+    top_mass.d_theta += d2_theta_1*dt;
+    bot_mass.d_theta += d2_theta_2*dt;
     
-    print ["theta_1", top_mass.theta]
-    print top_mass.theta
-    print top_mass.theta + d_theta_1*dt
-    top_mass.theta = top_mass.theta + d_theta_1*dt
-    print top_mass.theta
-    bot_mass.theta = bot_mass.theta + d_theta_2*dt
+    top_mass.theta = top_mass.theta + top_mass.d_theta*dt
+    bot_mass.theta = bot_mass.theta + bot_mass.d_theta*dt
 
-    print ["theta_1", top_mass.theta]
-    print fixed_tip.pos + polar_to_cart_vector3(l_top, theta_1)
     top_mass.pos = (fixed_tip.pos + polar_to_cart_vector3(l_top, top_mass.theta))
     bot_mass.pos = (top_mass.pos + polar_to_cart_vector3(l_bot, bot_mass.theta))
 
@@ -40,11 +36,11 @@ def update_masses(top_mass, bot_mass, fixed_tip, g, dt, l_top, l_bot, d_theta_1,
 def run(iteration):
     g = 9.8
     timer = 0
-    dt = 0.01
+    dt = 0.01 * 3
     timer = 0
-    max_time = 20
+    max_time = 60
     #initialize the fixed pivot of the pendulum
-    fixed_tip = box(pos = (0, 0, 0), length = 2, width = 2, height = .5, color = color.red)
+    fixed_tip = box(pos = (0, 0, 0), length = 2, width = 2, height = .5, color = color.red)    
     #initialize the top mass
     top_mass = sphere(mass = 1, radius = 1, color = color.green)    #(note that we haven't declared the position yet)
     top_mass.trail = curve(color = top_mass.color)
@@ -55,14 +51,13 @@ def run(iteration):
     l_top = 10
     l_bot = 10
     #initialize angles
-    top_mass.theta = math.pi/4     #angle swept out by upper rod against vertical line
-    bot_mass.theta = -1*math.pi/4  #angle swept out by lower rod against vertical line
+    top_mass.theta = math.pi/2     #angle swept out by upper rod against vertical line
+    bot_mass.theta = 0  #angle swept out by lower rod against vertical line
     #here, we finally get the positions of bot_mass and top_mass in cartesian coordinates
-
     top_mass.pos = fixed_tip.pos + polar_to_cart_vector3(l_top, top_mass.theta)
     bot_mass.pos = top_mass.pos + polar_to_cart_vector3(l_bot, bot_mass.theta)
-    d_theta_1 = 0   #time derivative of theta_1
-    d_theta_2 = 0   #time derivative of theta_2
+    top_mass.d_theta = 0   #time derivative of theta_1
+    bot_mass.d_theta = 0   #time derivative of theta_2
     
     #################
     #if you want to update the initial conditions over multiple iterations,
@@ -71,13 +66,11 @@ def run(iteration):
     #################
 
     while (timer < max_time):
-        rate(100) #remove this line if you dgaf about the animation
+        rate(100) #remove this line if you dgaf about the animation 
         timer += dt
 
         #update bot_mass and top_mass
-        print ["top_mass.pos before call", top_mass.pos]
-        update_masses(top_mass, bot_mass, fixed_tip, g, dt, l_top, l_bot, d_theta_1, d_theta_2)
-        print ["top_mass.pos after call ", top_mass.pos]
+        update_masses(top_mass, bot_mass, fixed_tip, g, dt, l_top, l_bot)
         #draw
         top_mass.trail.append(pos = top_mass.pos)
         bot_mass.trail.append(pos = bot_mass.pos)
@@ -103,7 +96,7 @@ def repeat():
 ##    timer = max_time
 ##
 ##    #initialize the fixed pivot of the pendulum
-##    fixed_tip = box(pos = (0, 0, 0), length = 2, width = 2, height = .5, color = color.red)
+##    fixed_tip = box(pos = (0, 0, 0), length = 2, width = 2, height = .5, color = color.red)    
 ##
 ##    #initialize the top mass
 ##    top_mass = sphere(mass = 1, radius = 1, color = color.green)
@@ -127,6 +120,6 @@ def repeat():
 ##
 ##    d_theta_1 = 0   #time derivative of theta_1
 ##    d_theta_2 = 0   #time derivative of theta_2
-##
+##    
 
 run(0)
