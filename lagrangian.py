@@ -9,13 +9,26 @@ def polar_to_cart_vector3(r, theta):
     #given polar coordinates (local to some origin), this function returns local cartesian coordinates in the form of a vector with 3 elements
     x = r * math.sin(theta)
     y = -1 * r * math.cos(theta)
-    return vector(x, y, 0) #or should it be some other ordering of x, y, and 0
+    return vector(y, x, 0) #or should it be some other ordering of x, y, and 0
 
-def update_masses(top_mass, bot_mass, fixed_tip, g, dt, l_top, l_bot, theta_1, theta_2, d_theta_1, d_theta_2):
+def update_masses(top_mass, bot_mass, fixed_tip, g, dt, l_top, l_bot, d_theta_1, d_theta_2):
+    theta_1 = top_mass.theta
+    theta_2 = bot_mass.theta
     mu = 1 + top_mass.mass / bot_mass.mass #shorthand
     #this thing is quite the rat's nest. God I hope it works.
-    d2_theta_1 = (g*(math.sin(theta_2)*math.cos(theta_1-theta_2)-mu*math.sin(theta_1))-(l_bot*d_theta_2*d_theta_2+l_top*d_theta_1*d_theta_1*math.cos(theta_1-theta_2))*math.sin(theta_1-theta_2))/(l_top*(mu-math.cos(theta_1-theta_2)*math.cos(theta_1-theta_2)));
-    d2_theta_2 = (mu*g*(math.sin(theta_1)*math.cos(theta_1-theta_2)-math.sin(theta_2))+(mu*l_top*d_theta_1*d_theta_1+l_bot*d_theta_2*d_theta_2*math.cos(theta_1-theta_2))*math.sin(theta_1-theta_2))/(l_bot*(mu-math.cos(theta_1-theta_2)*math.cos(theta_1-theta_2)));
+##    d2_theta_1 = (g*(math.sin(theta_2)*math.cos(theta_1-theta_2)-mu*math.sin(theta_1))-(l_bot*d_theta_2*d_theta_2+l_top*d_theta_1*d_theta_1*math.cos(theta_1-theta_2))*math.sin(theta_1-theta_2))/(l_top*(mu-math.cos(theta_1-theta_2)*math.cos(theta_1-theta_2)));
+##    d2_theta_2 = (mu*g*(math.sin(theta_1)*math.cos(theta_1-theta_2)-math.sin(theta_2))+(mu*l_top*d_theta_1*d_theta_1+l_bot*d_theta_2*d_theta_2*math.cos(theta_1-theta_2))*math.sin(theta_1-theta_2))/(l_bot*(mu-math.cos(theta_1-theta_2)*math.cos(theta_1-theta_2)));
+
+    Theta1 = top_mass.theta
+    Theta2 = bot_mass.theta
+    dTheta1 = d_theta_1
+    dTheta2 = d_theta_2
+    l1 = l_top
+    l2 = l_bot
+    d2Theta1  =  (g*(math.sin(Theta2)*math.cos(Theta1-Theta2)-mu*math.sin(Theta1))-(l2*dTheta2*dTheta2+l1*dTheta1*dTheta1*math.cos(Theta1-Theta2))*math.sin(Theta1-Theta2))/(l1*(mu-math.cos(Theta1-Theta2)*math.cos(Theta1-Theta2)));
+    d2_theta_1 = d2Theta1
+    d2Theta2  =  (mu*g*(math.sin(Theta1)*math.cos(Theta1-Theta2)-math.sin(Theta2))+(mu*l1*dTheta1*dTheta1+l2*dTheta2*dTheta2*math.cos(Theta1-Theta2))*math.sin(Theta1-Theta2))/(l2*(mu-math.cos(Theta1-Theta2)*math.cos(Theta1-Theta2)));
+    d2_theta_2 = d2Theta2
 
 ##    numer = g * (math.sin(theta_2) * math.sin(theta_1 - theta_2) - mu * math.sin(theta_1)
 ##    numer -= math.sin(theta_1 - theta_2) * (l_bot * d_theta_2**2 + l_top * d_theta_1**2
@@ -23,15 +36,15 @@ def update_masses(top_mass, bot_mass, fixed_tip, g, dt, l_top, l_bot, theta_1, t
     d_theta_1 += d2_theta_1*dt;
     d_theta_2 += d2_theta_2*dt;
     
-    print ["theta_1", theta_1]
-    print fixed_tip.pos + polar_to_cart_vector3(l_top, theta_1)
-    theta_1 += d_theta_1*dt;
-    theta_2 += d_theta_2*dt;
+    #print ["theta_1", top_mass.theta]
+    #print fixed_tip.pos + polar_to_cart_vector3(l_top, theta_1)
+    top_mass.theta += d_theta_1*dt;
+    bot_mass.theta += d_theta_2*dt;
 
-    print ["theta_1", theta_1]
-    print fixed_tip.pos + polar_to_cart_vector3(l_top, theta_1)
-    top_mass.pos = (fixed_tip.pos + polar_to_cart_vector3(l_top, theta_1))
-    bot_mass.pos = (top_mass.pos + polar_to_cart_vector3(l_bot, theta_2))
+    #print ["theta_1", top_mass.theta]
+    #print fixed_tip.pos + polar_to_cart_vector3(l_top, theta_1)
+    top_mass.pos = (fixed_tip.pos + polar_to_cart_vector3(l_top, top_mass.theta))
+    bot_mass.pos = (top_mass.pos + polar_to_cart_vector3(l_bot, bot_mass.theta))
 
 
 def run(iteration):
@@ -39,7 +52,7 @@ def run(iteration):
     timer = 0
     dt = 0.01
     timer = 0
-    max_time = 2
+    max_time = 20
     #initialize the fixed pivot of the pendulum
     fixed_tip = box(pos = (0, 0, 0), length = 2, width = 2, height = .5, color = color.red)    
     #initialize the top mass
@@ -52,13 +65,13 @@ def run(iteration):
     l_top = 10
     l_bot = 10
     #initialize angles
-    theta_1 = math.pi/4     #angle swept out by upper rod against vertical line
-    theta_2 = -1*math.pi/4  #angle swept out by lower rod against vertical line
+    top_mass.theta = math.pi/4     #angle swept out by upper rod against vertical line
+    bot_mass.theta = -1*math.pi/4  #angle swept out by lower rod against vertical line
     #here, we finally get the positions of bot_mass and top_mass in cartesian coordinates
-    top_mass.pos = fixed_tip.pos + polar_to_cart_vector3(l_top, theta_1)
-    bot_mass.pos = top_mass.pos + polar_to_cart_vector3(l_bot, theta_2)
-    d_theta_1 = 10   #time derivative of theta_1
-    d_theta_2 = 10   #time derivative of theta_2
+    top_mass.pos = fixed_tip.pos + polar_to_cart_vector3(l_top, top_mass.theta)
+    bot_mass.pos = top_mass.pos + polar_to_cart_vector3(l_bot, bot_mass.theta)
+    d_theta_1 = -1   #time derivative of theta_1
+    d_theta_2 = 0   #time derivative of theta_2
     
     #################
     #if you want to update the initial conditions over multiple iterations,
@@ -71,13 +84,13 @@ def run(iteration):
         timer += dt
 
         #update bot_mass and top_mass
-        print ["top_mass.pos before call", top_mass.pos]
-        update_masses(top_mass, bot_mass, fixed_tip, g, dt, l_top, l_bot, theta_1, theta_2, d_theta_1, d_theta_2)
-        print ["top_mass.pos after call ", top_mass.pos]
+        #print ["top_mass.pos before call", top_mass.pos]
+        update_masses(top_mass, bot_mass, fixed_tip, g, dt, l_top, l_bot, d_theta_1, d_theta_2)
+        #print ["top_mass.pos after call ", top_mass.pos]
         #draw
         top_mass.trail.append(pos = top_mass.pos)
         bot_mass.trail.append(pos = bot_mass.pos)
-        print "\n"
+        #print "\n"
     print "all done"
     print "started from the bottom now we here"
 
