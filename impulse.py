@@ -9,10 +9,12 @@ def swing():
     bot_mass = sphere(mass = 1, radius = 1, color = color.blue)
 
     top_mass.pos = vector(5, -10, 0)
+    top_mass.pos = vector(0, 1, 0) * 10
     bot_mass.pos = vector(10, -20, 0)
+    bot_mass.pos = top_mass.pos + vector(1, 0, 0) * 10
 
-    tip_top = helix(const = 10, len = 10, pos = fixed_tip.pos, radius = .5, thickness = .1, coils = 10, color = color.yellow)
-    top_bot = helix(const = 10, len = 10, radius = .5, thickness = .1, coils = 10, color = color.cyan)
+    tip_top = helix(const = 100000, len = 10, pos = fixed_tip.pos, radius = .5, thickness = .1, coils = 10, color = color.yellow)
+    top_bot = helix(const = 100000, len = 10, radius = .5, thickness = .1, coils = 10, color = color.cyan)
 
     tip_top.axis = top_mass.pos - fixed_tip.pos
 
@@ -40,7 +42,7 @@ def swing():
     bot_mass.momentum = bot_mass.mass * bot_mass.velocity
 
     timer = 0
-    dt = .01
+    dt = .01 / 3
 
     while timer < 60:
         rate(200)
