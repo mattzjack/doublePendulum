@@ -11,7 +11,7 @@ def polar_to_cart_vector3(r, theta):
     y = -1 * r * math.cos(theta)
     return vector(x, y, 0) #or should it be some other ordering of x, y, and 0
 
-def update_masses(top_mass, bot_mass, fixed_tip, g, dt, l_top, l_bot): 
+def update_masses(top_mass, bot_mass, fixed_tip, g, dt, l_top, l_bot):
     theta_1 = top_mass.theta        #shorthand
     theta_2 = bot_mass.theta        #shorthand
     d_theta_1 = top_mass.d_theta    #shorthand
@@ -25,7 +25,7 @@ def update_masses(top_mass, bot_mass, fixed_tip, g, dt, l_top, l_bot):
 
     top_mass.d_theta += d2_theta_1*dt;
     bot_mass.d_theta += d2_theta_2*dt;
-    
+
     top_mass.theta = top_mass.theta + top_mass.d_theta*dt
     bot_mass.theta = bot_mass.theta + bot_mass.d_theta*dt
 
@@ -40,7 +40,7 @@ def run(iteration):
     timer = 0
     max_time = 60
     #initialize the fixed pivot of the pendulum
-    fixed_tip = box(pos = (0, 0, 0), length = 2, width = 2, height = .5, color = color.red)    
+    fixed_tip = box(pos = (0, 0, 0), length = 2, width = 2, height = .5, color = color.red)
     #initialize the top mass
     top_mass = sphere(mass = 1, radius = 1, color = color.green)    #(note that we haven't declared the position yet)
     top_mass.trail = curve(color = top_mass.color)
@@ -58,7 +58,7 @@ def run(iteration):
     bot_mass.pos = top_mass.pos + polar_to_cart_vector3(l_bot, bot_mass.theta)
     top_mass.d_theta = 0   #time derivative of theta_1
     bot_mass.d_theta = 0   #time derivative of theta_2
-    
+
     #################
     #if you want to update the initial conditions over multiple iterations,
     #that would best be done right here.
@@ -66,7 +66,7 @@ def run(iteration):
     #################
 
     while (timer < max_time):
-        rate(100) #remove this line if you dgaf about the animation 
+        rate(100) #remove this line if you dgaf about the animation
         timer += dt
 
         #update bot_mass and top_mass
@@ -74,7 +74,7 @@ def run(iteration):
         #draw
         top_mass.trail.append(pos = top_mass.pos)
         bot_mass.trail.append(pos = bot_mass.pos)
-        print "\n"
+        # print "\n"
     print "all done"
     print "started from the bottom now we here"
 
@@ -96,7 +96,7 @@ def repeat():
 ##    timer = max_time
 ##
 ##    #initialize the fixed pivot of the pendulum
-##    fixed_tip = box(pos = (0, 0, 0), length = 2, width = 2, height = .5, color = color.red)    
+##    fixed_tip = box(pos = (0, 0, 0), length = 2, width = 2, height = .5, color = color.red)
 ##
 ##    #initialize the top mass
 ##    top_mass = sphere(mass = 1, radius = 1, color = color.green)
@@ -120,6 +120,6 @@ def repeat():
 ##
 ##    d_theta_1 = 0   #time derivative of theta_1
 ##    d_theta_2 = 0   #time derivative of theta_2
-##    
+##
 
 run(0)
