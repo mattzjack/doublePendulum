@@ -68,10 +68,10 @@ def run(dt = 0.01, max_time=10000, top_mass_theta_arg=math.pi/2, bot_mass_theta_
         #update bot_mass and top_mass
         prev_bot_theta = bot_mass.theta
         update_masses(top_mass, bot_mass, fixed_tip, g, dt, l_top, l_bot)
-        #draw
-        top_mass.trail.append(pos = top_mass.pos)
-        bot_mass.trail.append(pos = bot_mass.pos)
-    #print "completed one simulation"
+        #draw - might waste memory when running tons of sims
+        #top_mass.trail.append(pos = top_mass.pos)
+        #bot_mass.trail.append(pos = bot_mass.pos)
+    print "completed one simulation"
     #return some results of the simulation that we're interested in.
     return timer
 
@@ -87,8 +87,8 @@ def flipped(prev_theta, curr_theta):
 
 def repeat():
     #use this function if you want to iterate over initial conditions
-    degree_increment = 5   #Decreasing this increment value means we have to really sit around for a while in order to get the data.
-    sims_completed = 0
+    degree_increment = 1   #Decreasing this increment value means we have to really sit around for a while in order to get the data.
+
     with open('lagrangian_data.csv', 'wb') as f:
         writer = csv.writer(f)
         for top_angle_degrees in xrange(0,180,degree_increment):    #Python Lesson: Syntax for xrange() is xrange(begin, end, step). It returns a list that you can iterate over in a for loop.
@@ -97,12 +97,9 @@ def repeat():
                 top_angle_rad = top_angle_degrees * math.pi / 180
                 bot_angle_rad = bot_angle_degrees * math.pi / 180
                 row_results.append(run( top_mass_theta_arg=top_angle_rad, bot_mass_theta_arg=bot_angle_rad))
-                sims_completed += 1
-                print sims_completed
             writer.writerow(row_results)
     print "all done FOR REAL"
 
 repeat()
 #run(dt=0.05, max_time=10)
 #run(dt=0.05, max_time=100, top_mass_theta_arg=math.pi/2+0.5, bot_mass_theta_arg=math.pi-0.5)
-
