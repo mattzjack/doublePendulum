@@ -159,7 +159,7 @@ for theta1 in theta1_range:
         swing(-radians(theta1), -radians(theta2))
         if theta2 != theta2_range[-1]:
             target.write(", ")
-        print str(theta1) + ",", theta2
+        print "%r, %r" % (theta1, theta2)
     target.write("\n")
 
 target.close()
