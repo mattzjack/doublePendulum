@@ -23,32 +23,8 @@ def swing(angle1, angle2):
 
     tip_top.axis = top_mass.pos - fixed_tip.pos
 
-    # if tip_top.axis.y < 0:
-    #     angle_top = atan(-tip_top.axis.x / tip_top.axis.y)
-    # elif tip_top.axis.y >= 0:
-    #     if tip_top.axis.x >= 0:
-    #         angle_top = pi / 2 + atan(tip_top.axis.y / tip_top.axis.x)
-    #     elif tip_top.axis.x < 0:
-    #         tip_top.axis.x < 0
-    #     else:
-    #         print "error: tip_top.axis.x"
-    # else:
-    #     print "error: tip_top.axis.y"
-
     top_bot.pos = top_mass.pos
     top_bot.axis = bot_mass.pos - top_mass.pos
-
-    # if top_bot.axis.y < 0:
-    #     angle_bot = atan(-top_bot.axis.x / top_bot.axis.y)
-    # elif top_bot.axis.y >= 0:
-    #     if top_bot.axis.x >= 0:
-    #         angle_bot = pi / 2 + atan(top_bot.axis.y / top_bot.axis.x)
-    #     elif top_bot.axis.x < 0:
-    #         top_bot.axis.x < 0
-    #     else:
-    #         print "error: top_bot.axis.x"
-    # else:
-    #     print "error: top_bot.axis.y"
 
     # top_mass.trail = curve(color = top_mass.color)
     # bot_mass.trail = curve(color = bot_mass.color)
@@ -81,7 +57,6 @@ def swing(angle1, angle2):
     dt = .01
 
     while not flipped and timer < 200:
-        rate(1000)
         timer += dt
 
         # top_mass.trail.append(pos = top_mass.pos)
@@ -96,18 +71,6 @@ def swing(angle1, angle2):
         bot_mass.pos += bot_mass.velocity * dt
 
         tip_top.axis = top_mass.pos - fixed_tip.pos
-
-        # if tip_top.axis.y < 0:
-        #     angle_top = atan(-tip_top.axis.x / tip_top.axis.y)
-        # elif tip_top.axis.y >= 0:
-        #     if tip_top.axis.x >= 0:
-        #         angle_top = pi / 2 + atan(tip_top.axis.y / tip_top.axis.x)
-        #     elif tip_top.axis.x < 0:
-        #         tip_top.axis.x < 0
-        #     else:
-        #         print "error: tip_top.axis.x"
-        # else:
-        #     print "error: tip_top.axis.y"
 
         was_left = False
         was_right = False
@@ -125,18 +88,6 @@ def swing(angle1, angle2):
 
         top_bot.pos = top_mass.pos
         top_bot.axis = bot_mass.pos - top_mass.pos
-
-        # if top_bot.axis.y < 0:
-        #     angle_bot = atan(top_bot.axis.x / (-top_bot.axis.y))
-        # elif top_bot.axis.y >= 0:
-        #     if top_bot.axis.x >= 0:
-        #         angle_bot = pi / 2 + atan(top_bot.axis.y / top_bot.axis.x)
-        #     elif top_bot.axis.x < 0:
-        #         top_bot.axis.x < 0
-        #     else:
-        #         print "error: top_bot.axis.x"
-        # else:
-        #     print "error: top_bot.axis.y"
 
         if top_bot.axis.y > 0:
             above = True
@@ -164,8 +115,8 @@ def swing(angle1, angle2):
 
     target.write(str(timer))
 
-theta1_range = range(-1, 2)
-theta2_range = range(-1, 2)
+theta1_range = range(-10, 11)
+theta2_range = range(-10, 11)
 
 for theta1 in theta1_range:
     for theta2 in theta2_range:
