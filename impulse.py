@@ -180,10 +180,17 @@ def swing(angle1, angle2):
 
         # target.write("top angle: " + str(angle_top) + "; bot angle: " + str(angle_bot) + "\n")
 
-    target.write(str(timer) + ", ")
-for theta1 in range(6):
-    for theta2 in range(10):
+    target.write(str(timer))
+
+theta1_range = 9
+theta2_range = 10
+
+for theta1 in range(theta1_range):
+    for theta2 in range(theta2_range):
         swing(-radians(theta1), -radians(theta2))
+        if theta2 != theta2_range - 1:
+            target.write(", ")
+        print str(theta1) + ",", theta2
     target.write("\n")
 
 target.close
