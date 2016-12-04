@@ -50,8 +50,8 @@ def swing(angle1, angle2):
     else:
         print "error: top_bot.axis.y"
 
-    top_mass.trail = curve(color = top_mass.color)
-    bot_mass.trail = curve(color = bot_mass.color)
+    # top_mass.trail = curve(color = top_mass.color)
+    # bot_mass.trail = curve(color = bot_mass.color)
 
     top_mass.Fg = vector(0, -top_mass.mass * g, 0)
     bot_mass.Fg = vector(0, -bot_mass.mass * g, 0)
@@ -81,8 +81,8 @@ def swing(angle1, angle2):
     while not flipped and timer < 200:
         timer += dt
 
-        top_mass.trail.append(pos = top_mass.pos)
-        bot_mass.trail.append(pos = bot_mass.pos)
+        # top_mass.trail.append(pos = top_mass.pos)
+        # bot_mass.trail.append(pos = bot_mass.pos)
 
         top_mass.momentum += top_mass.Ftot * dt
         top_mass.velocity = top_mass.momentum / top_mass.mass
@@ -162,4 +162,4 @@ for theta1 in theta1_range:
         print str(theta1) + ",", theta2
     target.write("\n")
 
-target.close
+target.close()
