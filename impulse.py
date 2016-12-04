@@ -6,7 +6,6 @@ script, filename = argv
 
 target = open(filename, 'w')
 target.truncate()
-# target.write("impulse data\n")
 
 
 def swing(angle1, angle2):
@@ -17,9 +16,7 @@ def swing(angle1, angle2):
     bot_mass = sphere(mass = 1, radius = 1, color = color.blue)
 
     top_mass.pos = vector(10, 0, 0).rotate(angle = angle1, axis = (0, 0, 1))
-    # top_mass.pos = vector(0, 1, 0) * 10
     bot_mass.pos = top_mass.pos + vector(10, 0, 0).rotate(angle = angle2, axis = (0, 0, 1))
-    # bot_mass.pos = top_mass.pos + vector(1, 0, 0) * 10
 
     tip_top = helix(const = 9999, len = 10, pos = fixed_tip.pos, radius = .5, thickness = .1, coils = 10, color = color.yellow)
     top_bot = helix(const = 9999, len = 10, radius = .5, thickness = .1, coils = 10, color = color.cyan)
@@ -81,8 +78,6 @@ def swing(angle1, angle2):
     timer = 0
     dt = .01
 
-    # target.write("top angle: " + str(angle1) + "; bot angle: " + str(angle2) + "\n")
-
     while not flipped and timer < 200:
         timer += dt
 
@@ -111,38 +106,14 @@ def swing(angle1, angle2):
         else:
             print "error: tip_top.axis.y"
 
-        # if top_bot.axis.y >= 0:
-        #     if top_bot.axis.x < 0:
-        #         was_left = True
-        #     else:
-        #         was_left = False
-        # else:
-        #     was_left = False
-
         top_bot.pos = top_mass.pos
         top_bot.axis = bot_mass.pos - top_mass.pos
 
-        # if top_bot.axis.y >= 0:
-        #     if top_bot.axis.x >= 0:
-        #         now_right = True
-        #     else:
-        #         now_right = False
-        # else:
-        #     now_right = False
-        #
-        # if (was_left and now_right) or (not was_left and not now_right):
-        #     flipped = True
-        # else:
-        #     flipped = False
-
         if top_bot.axis.y >= 0:
-            # above = True
             if angle_bot < 0:
                 was_left = True
             else:
                 was_left = False
-        # else:
-        #     above = False
 
         if top_bot.axis.y < 0:
             angle_bot = atan(-top_bot.axis.x / top_bot.axis.y)
@@ -177,8 +148,6 @@ def swing(angle1, angle2):
 
         top_mass.Ftot = top_mass.Fg + top_mass.Fs_up + top_mass.Fs_down
         bot_mass.Ftot = bot_mass.Fg + bot_mass.Fs
-
-        # target.write("top angle: " + str(angle_top) + "; bot angle: " + str(angle_bot) + "\n")
 
     target.write(str(timer))
 
