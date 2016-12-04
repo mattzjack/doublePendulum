@@ -11,7 +11,7 @@ def polar_to_cart_vector3(r, theta):
     y = -1 * r * math.cos(theta)
     return vector(x, y, 0)
 
-def update_masses(top_mass, bot_mass, fixed_tip, g, dt, l_top, l_bot): 
+def update_masses(top_mass, bot_mass, fixed_tip, g, dt, l_top, l_bot):
     theta_1 = top_mass.theta        #shorthand
     theta_2 = bot_mass.theta        #shorthand
     d_theta_1 = top_mass.d_theta    #shorthand
@@ -25,7 +25,7 @@ def update_masses(top_mass, bot_mass, fixed_tip, g, dt, l_top, l_bot):
 
     top_mass.d_theta += d2_theta_1*dt;
     bot_mass.d_theta += d2_theta_2*dt;
-    
+
     top_mass.theta = top_mass.theta + top_mass.d_theta*dt
     bot_mass.theta = bot_mass.theta + bot_mass.d_theta*dt
 
@@ -43,7 +43,7 @@ def run(dt = 0.01, max_time=10000, top_mass_theta_arg=math.pi/2, bot_mass_theta_
     g = 9.8
     timer = 0
     #initialize the fixed pivot of the pendulum
-    fixed_tip = box(pos = (0, 0, 0), length = 2, width = 2, height = .5, color = color.red)    
+    fixed_tip = box(pos = (0, 0, 0), length = 2, width = 2, height = .5, color = color.red)
     #initialize the top mass
     top_mass = sphere(mass = 1, radius = 1, color = color.green)    #(note that we haven't declared the position yet)
     top_mass.trail = curve(color = top_mass.color)
@@ -56,6 +56,7 @@ def run(dt = 0.01, max_time=10000, top_mass_theta_arg=math.pi/2, bot_mass_theta_
     #here, we finally get the positions of bot_mass and top_mass in cartesian coordinates
     top_mass.pos = fixed_tip.pos + polar_to_cart_vector3(l_top, top_mass.theta)
     bot_mass.pos = top_mass.pos + polar_to_cart_vector3(l_bot, bot_mass.theta)
+
     top_mass.d_theta = top_mass_d_theta_arg     #time derivative of theta_1
     bot_mass.d_theta = bot_mass_d_theta_arg     #time derivative of theta_2
     
@@ -84,11 +85,9 @@ def flipped(prev_theta, curr_theta):
             return true
     return false
 
-
 def repeat():
     #use this function if you want to iterate over initial conditions
     degree_increment = 1   #Decreasing this increment value means we have to really sit around for a while in order to get the data.
-
     with open('lagrangian_data.csv', 'wb') as f:
         writer = csv.writer(f)
         for top_angle_degrees in xrange(0,180,degree_increment):    #Python Lesson: Syntax for xrange() is xrange(begin, end, step). It returns a list that you can iterate over in a for loop.
