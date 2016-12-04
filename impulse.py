@@ -60,7 +60,7 @@ def swing(angle1, angle2):
     dt = .01
 
     while not flipped and timer < 200:
-        rate(500)
+        # rate(1000)
         # top_mass.trail.append(pos = top_mass.pos)
         # bot_mass.trail.append(pos = bot_mass.pos)
 
@@ -115,15 +115,15 @@ def swing(angle1, angle2):
         top_mass.Ftot = top_mass.Fg + top_mass.Fs_up + top_mass.Fs_down
         bot_mass.Ftot = bot_mass.Fg + bot_mass.Fs
 
+        timer += dt
+
     try:
         target.write(str(timer))
     except:
         pass
 
-    timer += dt
-
-theta1_range = range(-1, 0)
-theta2_range = range(-1, 0)
+theta1_range = range(-30, 35, 5)
+theta2_range = range(-30, 35, 5)
 
 for theta1 in theta1_range:
     for theta2 in theta2_range:
@@ -138,7 +138,11 @@ for theta1 in theta1_range:
         target.write("\n")
     except:
         pass
+
 try:
     target.close()
+    print "closed."
 except:
     pass
+
+print "done."
