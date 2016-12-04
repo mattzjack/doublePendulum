@@ -1,7 +1,7 @@
 from visual import *
 from visual.graph import *
 import math
-
+import csv
 ################################################
 
 
@@ -38,7 +38,7 @@ def update_masses(top_mass, bot_mass, fixed_tip, g, dt, l_top, l_bot):
 #To call run(), you have the option of specifying certain arguments like this: run(arg_name=arg_value).
 #If you don't specify any arguments to the function, it'll just assume some default arguments and happily run.
 #It's the exact same syntax you would use to initialize a Vpython object - can initialize a sphere with sphere(), sphere(radius=1, mass=1), sphere(mass=1, pos=(0,0,0), radius=1), etc.
-def run(dt = 0.01, max_time=100, top_mass_theta_arg=math.pi/2, bot_mass_theta_arg=0, l_top=10, l_bot=10, top_mass_d_theta_arg=0, bot_mass_d_theta_arg=0):
+def run(dt = 0.01, max_time=10000, top_mass_theta_arg=math.pi/2, bot_mass_theta_arg=0, l_top=10, l_bot=10, top_mass_d_theta_arg=0, bot_mass_d_theta_arg=0):
     #"top_mass_theta_arg" and "top_mass_d_theta_arg" are TERRIBLE variable names, but at least they're consistent.
     g = 9.8
     timer = 0
@@ -59,17 +59,14 @@ def run(dt = 0.01, max_time=100, top_mass_theta_arg=math.pi/2, bot_mass_theta_ar
     top_mass.d_theta = top_mass_d_theta_arg     #time derivative of theta_1
     bot_mass.d_theta = bot_mass_d_theta_arg     #time derivative of theta_2
     
-    #################
-    #if you want to update the initial conditions over multiple iterations,
-    #that would best be done right here.
-    #simply update the initial conditions as a function of the iteration.
-    #################
-
-    while (timer < max_time and not flipped(bot_mass.theta)): #if we're measuring the time for something else to happen, simply replace the call to flipped() with some other check.
+    prev_bot_theta = bot_mass.theta
+    
+    while (timer < max_time and not flipped(prev_bot_theta, bot_mass.theta)): #if we're measuring the time for something else to happen, simply replace the call to flipped() with some other check.
         #rate(100) #comment out this line if you dgaf about the animation - it'll run much faster.
         timer += dt
 
         #update bot_mass and top_mass
+        prev_bot_theta = bot_mass.theta
         update_masses(top_mass, bot_mass, fixed_tip, g, dt, l_top, l_bot)
         #draw
         top_mass.trail.append(pos = top_mass.pos)
@@ -78,24 +75,31 @@ def run(dt = 0.01, max_time=100, top_mass_theta_arg=math.pi/2, bot_mass_theta_ar
     #return some results of the simulation that we're interested in.
     return timer
 
-def flipped(theta):
-    theta = theta % (2*math.pi)
-    return (abs(theta - math.pi) < 10**-6)
-    #this is a pretty poor way to check for flipping. The below would be better, but would require somme refactoring.
-    #return (prev_theta <= pi <= curr_theta) or (curr_theta <= pi <= prev_theta)
-
+def flipped(prev_theta, curr_theta):
+    prev_theta = prev_theta % (2 * math.pi)
+    curr_theta = curr_theta % (2*math.pi)
+    if 3*math.pi/2 > prev_theta > math.pi/2 and 3*math.pi/2 > curr_theta > math.pi/2: #this is a liiiiittle hack-y, but boy is it less hacky than what we used to have!
+        if ((prev_theta < math.pi and curr_theta > math.pi) or (prev_theta > math.pi and curr_theta < math.pi)):
+            print prev_theta, curr_theta
+            return true
+    return false
 
 
 def repeat():
     #use this function if you want to iterate over initial conditions
-    results = []
-    degree_increment = 60   #Decreasing this increment value means we have to really sit around for a while in order to get the data.
-    for top_angle_degrees in xrange(0,180,degree_increment):    #Python Lesson: Syntax for xrange() is xrange(begin, end, step). It returns a list that you can iterate over in a for loop.
-        for bot_angle_degrees in xrange(0,180, degree_increment):
-            top_angle_rad = top_angle_degrees * math.pi / 180
-            bot_angle_rad = bot_angle_degrees * math.pi / 180
-            results.append(run( top_mass_theta_arg=top_angle_rad, bot_mass_theta_arg=bot_angle_rad))
-    print results
+    degree_increment = 1   #Decreasing this increment value means we have to really sit around for a while in order to get the data.
+
+    with open('lagrangian_data.csv', 'wb') as f:
+        writer = csv.writer(f)
+        for top_angle_degrees in xrange(0,180,degree_increment):    #Python Lesson: Syntax for xrange() is xrange(begin, end, step). It returns a list that you can iterate over in a for loop.
+            row_results = []
+            for bot_angle_degrees in xrange(0,180, degree_increment):
+                top_angle_rad = top_angle_degrees * math.pi / 180
+                bot_angle_rad = bot_angle_degrees * math.pi / 180
+                row_results.append(run( top_mass_theta_arg=top_angle_rad, bot_mass_theta_arg=bot_angle_rad))
+            writer.writerow(row_results)
     print "all done FOR REAL"
 
 repeat()
+#run(dt=0.05, max_time=10)
+#run(dt=0.05, max_time=100, top_mass_theta_arg=math.pi/2+0.5, bot_mass_theta_arg=math.pi-0.5)
