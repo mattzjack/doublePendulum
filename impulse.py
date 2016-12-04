@@ -2,10 +2,13 @@ from visual import *
 from visual.graph import *
 from sys import argv
 
-script, filename = argv
+try:
+    script, filename = argv
 
-target = open(filename, 'w')
-target.truncate()
+    target = open(filename, 'w')
+    target.truncate()
+except:
+    pass
 
 
 def swing(angle1, angle2):
@@ -57,6 +60,7 @@ def swing(angle1, angle2):
     dt = .01
 
     while not flipped and timer < 200:
+        rate(500)
         # top_mass.trail.append(pos = top_mass.pos)
         # bot_mass.trail.append(pos = bot_mass.pos)
 
@@ -111,19 +115,30 @@ def swing(angle1, angle2):
         top_mass.Ftot = top_mass.Fg + top_mass.Fs_up + top_mass.Fs_down
         bot_mass.Ftot = bot_mass.Fg + bot_mass.Fs
 
-    target.write(str(timer))
+    try:
+        target.write(str(timer))
+    except:
+        pass
 
     timer += dt
 
-theta1_range = range(-10, 11)
-theta2_range = range(-10, 11)
+theta1_range = range(-1, 0)
+theta2_range = range(-1, 0)
 
 for theta1 in theta1_range:
     for theta2 in theta2_range:
         print "%r, %r" % (theta1, theta2)
         swing(-radians(theta1), -radians(theta2))
         if theta2 != theta2_range[-1]:
-            target.write(", ")
-    target.write("\n")
-
-target.close()
+            try:
+                target.write(", ")
+            except:
+                pass
+    try:
+        target.write("\n")
+    except:
+        pass
+try:
+    target.close()
+except:
+    pass
