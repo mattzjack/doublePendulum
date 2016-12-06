@@ -21,8 +21,8 @@ def swing(angle1, angle2):
     top_mass.pos = vector(10, 0, 0).rotate(angle = angle1, axis = (0, 0, 1))
     bot_mass.pos = top_mass.pos + vector(10, 0, 0).rotate(angle = angle2, axis = (0, 0, 1))
 
-    tip_top = helix(const = 9999, len = 10, pos = fixed_tip.pos, radius = .5, thickness = .1, coils = 10, color = color.yellow)
-    top_bot = helix(const = 9999, len = 10, radius = .5, thickness = .1, coils = 10, color = color.cyan)
+    tip_top = helix(const = 500, len = 10, pos = fixed_tip.pos, radius = .5, thickness = .1, coils = 10, color = color.yellow)
+    top_bot = helix(const = 500, len = 10, radius = .5, thickness = .1, coils = 10, color = color.cyan)
 
     tip_top.axis = top_mass.pos - fixed_tip.pos
 
@@ -59,8 +59,31 @@ def swing(angle1, angle2):
     timer = 0
     dt = .01
 
-    while not flipped and timer < 500:
-        # rate(1000)
+    if tip_top.axis.y < 0:
+             angle_top = atan(-tip_top.axis.x / tip_top.axis.y)
+    else:
+        if tip_top.axis.x >= 0:
+            angle_top = pi / 2 + atan(tip_top.axis.y / tip_top.axis.x)
+        else:
+            tip_top.axis.x < 0
+
+    if top_bot.axis.y < 0:
+        angle_bot = atan(-top_bot.axis.x / top_bot.axis.y)
+    else:
+        if top_bot.axis.x >= 0:
+            angle_bot = pi / 2 + atan(top_bot.axis.y / top_bot.axis.x)
+        else:
+            top_bot.axis.x < 0
+
+    angle_top_old = angle_top
+    angle_bot_old = angle_bot
+
+    dangle_top = angle_top - angle_top_old
+    dangle_bot = angle_bot - angle_bot_old
+
+    # while not flipped and timer < 500:
+    while timer < 500:
+        # rate(10)
         # top_mass.trail.append(pos = top_mass.pos)
         # bot_mass.trail.append(pos = bot_mass.pos)
 
@@ -73,6 +96,18 @@ def swing(angle1, angle2):
         bot_mass.pos += bot_mass.velocity * dt
 
         tip_top.axis = top_mass.pos - fixed_tip.pos
+
+        angle_top_old = angle_top
+
+        if tip_top.axis.y < 0:
+                 angle_top = atan(-tip_top.axis.x / tip_top.axis.y)
+        else:
+            if tip_top.axis.x >= 0:
+                angle_top = pi / 2 + atan(tip_top.axis.y / tip_top.axis.x)
+            else:
+                tip_top.axis.x < 0
+
+        dangle_top = angle_top - angle_top_old
 
         was_left = False
         was_right = False
@@ -107,6 +142,18 @@ def swing(angle1, angle2):
         else:
             flipped = False
 
+        angle_bot_old = angle_bot
+
+        if top_bot.axis.y < 0:
+            angle_bot = atan(-top_bot.axis.x / top_bot.axis.y)
+        else:
+            if top_bot.axis.x >= 0:
+                angle_bot = pi / 2 + atan(top_bot.axis.y / top_bot.axis.x)
+            else:
+                top_bot.axis.x < 0
+
+        dangle_bot = angle_bot - angle_bot_old
+
         top_mass.Fs_up = -tip_top.const * (mag(tip_top.axis) - tip_top.len) * norm(tip_top.axis)
 
         bot_mass.Fs = -top_bot.const * (mag(top_bot.axis) - top_bot.len) * norm(top_bot.axis)
@@ -115,18 +162,20 @@ def swing(angle1, angle2):
         top_mass.Ftot = top_mass.Fg + top_mass.Fs_up + top_mass.Fs_down
         bot_mass.Ftot = bot_mass.Fg + bot_mass.Fs
 
+        # print dangle_top * 180 / pi, dangle_bot * 180 / pi
+
         timer += dt
 
-    try:
-        target.write(str(timer))
-    except:
-        pass
+        try:
+            target.write(str(dangle_top) + ", ")
+        except:
+            pass
 
-theta1_first = 0
-theta1_last = 180
+theta1_first = 90
+theta1_last = 95
 
-theta2_first = 0
-theta2_last = 180
+theta2_first = 90
+theta2_last = 95
 
 theta1_range = range(theta1_first, theta1_last, 5)
 theta2_range = range(theta2_first, theta2_last, 5)
@@ -135,15 +184,15 @@ for theta1 in theta1_range:
     for theta2 in theta2_range:
         print "%r, %r" % (theta1, theta2)
         swing(-radians(90 - theta1), -radians(90 - theta2))
-        if theta2 != theta2_range[-1]:
-            try:
-                target.write(", ")
-            except:
-                pass
-    try:
-        target.write("\n")
-    except:
-        pass
+    #     if theta2 != theta2_range[-1]:
+    #         try:
+    #             target.write(", ")
+    #         except:
+    #             pass
+    # try:
+    #     target.write("\n")
+    # except:
+    #     pass
 
 try:
     target.close()
