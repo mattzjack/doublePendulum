@@ -21,8 +21,8 @@ def swing(angle1, angle2):
     top_mass.pos = vector(10, 0, 0).rotate(angle = angle1, axis = (0, 0, 1))
     bot_mass.pos = top_mass.pos + vector(10, 0, 0).rotate(angle = angle2, axis = (0, 0, 1))
 
-    tip_top = helix(const = 500, len = 10, pos = fixed_tip.pos, radius = .5, thickness = .1, coils = 10, color = color.yellow)
-    top_bot = helix(const = 500, len = 10, radius = .5, thickness = .1, coils = 10, color = color.cyan)
+    tip_top = helix(const = 50, len = 10, pos = fixed_tip.pos, radius = .5, thickness = .1, coils = 10, color = color.yellow)
+    top_bot = helix(const = 50, len = 10, radius = .5, thickness = .1, coils = 10, color = color.cyan)
 
     tip_top.axis = top_mass.pos - fixed_tip.pos
 
@@ -167,7 +167,7 @@ def swing(angle1, angle2):
         timer += dt
 
         try:
-            target.write(str(dangle_top) + ", ")
+            target.write(str(dangle_bot) + ", ")
         except:
             pass
 
